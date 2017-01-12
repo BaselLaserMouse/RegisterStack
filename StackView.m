@@ -12,10 +12,12 @@ classdef StackView < handle
         max_range       % min display value for each channel
         min_range       % max display value for each channel
         iframe          % last frame displayed
+        greenidx        % index of green channel
     end
     
     methods
-        function obj = StackView(stack, ax, sliderFrame, sliderMin, sliderMax, pmChannel)
+        function obj = StackView(stack, ax, sliderFrame, sliderMin, ...
+                sliderMax, pmChannel, greenidx)
             % store inputs
             obj.stack = stack;
             obj.ax = ax;
@@ -23,6 +25,12 @@ classdef StackView < handle
             obj.sliderMin = sliderMin;
             obj.sliderMax = sliderMax;
             obj.pmChannel = pmChannel;
+            
+            if exist('greenidx','var')
+                obj.greenidx = greenidx;
+            else
+                obj.greenidx = 1;
+            end
             
             % initialize sliders
             nchannels = size(obj.stack,3);
@@ -105,18 +113,27 @@ classdef StackView < handle
             end
             
             % make color image
+            switch obj.greenidx
+                case 1
+                    redidx = 2;
+                case 2
+                    redidx = 1;
+                otherwise
+                    redidx = 2;
+            end
+            
             switch nchannels
                 case 1
                     cdata = cat(3,zeros(size(thisframe,1),size(thisframe,2)),...
-                       thisframe(:,:,1),...
+                       thisframe(:,:,obj.greenidx),...
                        zeros(size(thisframe,1),size(thisframe,2)));                   
                 case 2
-                    cdata = cat(3,thisframe(:,:,2),...
-                       thisframe(:,:,1),...
+                    cdata = cat(3,thisframe(:,:,redidx),...
+                       thisframe(:,:,obj.greenidx),...
                        zeros(size(thisframe,1),size(thisframe,2)));
                 otherwise
-                    cdata = cat(3,thisframe(:,:,2),...
-                       thisframe(:,:,1),...
+                    cdata = cat(3,thisframe(:,:,redidx),...
+                       thisframe(:,:,obj.greenidx),...
                        thisframe(:,:,3));
             end
             set(obj.im,'CData',cdata);                   

@@ -26,6 +26,7 @@ classdef RegisterStack < handle
         tbReferenceChannels
         pmStackChannel
         pmReferenceChannel
+        pmGreen
         
         pbTransform
         pbLoad
@@ -93,7 +94,9 @@ classdef RegisterStack < handle
         
             obj.pbSelectCPStack = findobj(fig, 'tag', 'pbSelectCPStack');            
             obj.pbSelectCPReference = findobj(fig, 'tag', 'pbSelectCPReference');
-                        
+             
+            obj.pmGreen = findobj(fig, 'tag', 'pmGreen');
+            
             obj.pmCP = findobj(fig, 'tag', 'pmCP');
             obj.pbFindCP = findobj(fig, 'tag', 'pbFindCP');
             obj.pbFindPoint = findobj(fig, 'tag', 'pbFindPoint');
@@ -464,12 +467,21 @@ classdef RegisterStack < handle
                     obj.zstack = permute(obj.zstack,[1 2 4 3]);
                     
                 end
-                obj.stackView = StackView(obj.zstack(:,:,:,:), ... % load on init
+                
+                obj.zstack = obj.zstack(:,:,:,:);
+                
+                % switch first two channels
+%                 tmp = obj.zstack(:,:,2);
+%                 obj.zstack(:,:,2) = obj.zstack(:,:,1);
+%                 obj.zstack(:,:,1) = tmp;
+                
+                obj.stackView = StackView(obj.zstack, ... % load on init
                     obj.axesStack, ...
                     obj.sliderStackFrame, ...
                     obj.sliderStackMin, ...
                     obj.sliderStackMax, ...
-                    obj.pmStackChannel);
+                    obj.pmStackChannel, ...
+                    str2num(obj.pmGreen.String{obj.pmGreen.Value}));
                 addlistener(obj.sliderStackFrame, 'Value', 'PostSet', ...
                     @obj.update_stack_axes);                
             end
@@ -506,7 +518,8 @@ classdef RegisterStack < handle
                     obj.sliderReferenceFrame, ...
                     obj.sliderReferenceMin, ...
                     obj.sliderReferenceMax, ...
-                    obj.pmReferenceChannel);
+                    obj.pmReferenceChannel, ...
+                    str2num(obj.pmGreen.String{obj.pmGreen.Value}));
                 addlistener(obj.sliderReferenceFrame, 'Value', 'PostSet', ...
                     @obj.update_reference_axes);                
             end
