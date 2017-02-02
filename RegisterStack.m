@@ -37,6 +37,10 @@ classdef RegisterStack < handle
         sliderStackMax
         sliderReferenceMin
         sliderReferenceMax
+        tbStackMin
+        tbStackMax
+        tbReferenceMin
+        tbReferenceMax
         
         sliderStackFrame
         sliderReferenceFrame
@@ -88,6 +92,11 @@ classdef RegisterStack < handle
             obj.sliderStackMax = findobj(fig, 'tag', 'sliderStackMax');
             obj.sliderReferenceMin = findobj(fig, 'tag', 'sliderReferenceMin');
             obj.sliderReferenceMax = findobj(fig, 'tag', 'sliderReferenceMax');
+            
+            obj.tbStackMin = findobj(fig, 'tag', 'tbStackMin');
+            obj.tbStackMax = findobj(fig, 'tag', 'tbStackMax');
+            obj.tbReferenceMin = findobj(fig, 'tag', 'tbReferenceMin');
+            obj.tbReferenceMax = findobj(fig, 'tag', 'tbReferenceMax');
 
             obj.sliderStackFrame = findobj(fig, 'tag', 'sliderStackFrame');
             obj.sliderReferenceFrame = findobj(fig, 'tag', 'sliderReferenceFrame');
@@ -146,6 +155,59 @@ classdef RegisterStack < handle
                 addlistener(obj.sliderReferenceFrame, 'Value', 'PostSet', ...
                     @obj.update_reference_axes);                  
             end
+            
+            obj.tbReferenceMin.String = num2str(obj.sliderReferenceMin.Value);
+            obj.tbReferenceMax.String = num2str(obj.sliderReferenceMax.Value);            
+            obj.tbStackMin.String = num2str(obj.sliderStackMin.Value);
+            obj.tbStackMax.String = num2str(obj.sliderStackMax.Value);
+            
+            addlistener(obj.sliderReferenceMin, 'Value', 'PostSet', ...
+                @obj.update_textboxes);
+            addlistener(obj.sliderReferenceMax, 'Value', 'PostSet', ...
+                @obj.update_textboxes);
+            addlistener(obj.sliderStackMin, 'Value', 'PostSet', ...
+                @obj.update_textboxes);
+            addlistener(obj.sliderStackMax, 'Value', 'PostSet', ...
+                @obj.update_textboxes);
+            
+            addlistener(obj.tbReferenceMin, 'String', 'PostSet', ...
+                    @obj.update_sliders);
+            addlistener(obj.tbReferenceMax, 'String', 'PostSet', ...
+                    @obj.update_sliders);
+            addlistener(obj.tbStackMin, 'String', 'PostSet', ...
+                    @obj.update_sliders);
+            addlistener(obj.tbStackMax, 'String', 'PostSet', ...
+                    @obj.update_sliders);
+        end
+        
+        function update_textboxes(obj, varargin)
+            if ~strcmp(obj.tbReferenceMin.String, num2str(obj.sliderReferenceMin.Value))
+            	obj.tbReferenceMin.String = num2str(obj.sliderReferenceMin.Value);
+            end
+            if ~strcmp(obj.tbReferenceMax.String, num2str(obj.sliderReferenceMax.Value))
+                obj.tbReferenceMax.String = num2str(obj.sliderReferenceMax.Value);            
+            end
+            if ~strcmp(obj.tbStackMin.String, num2str(obj.sliderStackMin.Value))
+                obj.tbStackMin.String = num2str(obj.sliderStackMin.Value);
+            end
+            if ~strcmp(obj.tbStackMax.String, num2str(obj.sliderStackMax.Value))
+                obj.tbStackMax.String = num2str(obj.sliderStackMax.Value);
+            end
+        end
+        
+        function update_sliders(obj, varargin)
+            if ~strcmp(obj.tbReferenceMin.String, num2str(obj.sliderReferenceMin.Value))
+            	obj.sliderReferenceMin.Value = str2num(obj.tbReferenceMin.String);
+            end
+            if ~strcmp(obj.tbReferenceMax.String, num2str(obj.sliderReferenceMax.Value))
+                obj.sliderReferenceMax.Value = str2num(obj.tbReferenceMax.String);            
+            end
+            if ~strcmp(obj.tbStackMin.String, num2str(obj.sliderStackMin.Value))
+                obj.sliderStackMin.Value = str2num(obj.tbStackMin.String);
+            end
+            if ~strcmp(obj.tbStackMax.String, num2str(obj.sliderStackMax.Value))
+                obj.sliderStackMax.Value = str2num(obj.tbStackMax.String);
+            end            
         end
         
         function find_point(obj, varargin)
