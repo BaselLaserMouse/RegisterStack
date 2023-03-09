@@ -12,7 +12,11 @@ function transformed = transformstack(sourcestack, targetstack, tform)
 % preallocate ram
 transformed = zeros(nx,ny,nc,nz);
 % coordinate matrix in regavg space
-v = ones(nx*ny,4);
+if nz > 1
+    v = ones(nx*ny,4);
+else
+    v = ones(nx*ny,3);
+end
 for indY=1:ny
     v((indY-1)*nx+[1:nx],1) = 1:nx;
     v((indY-1)*nx+[1:nx],2) = indY;

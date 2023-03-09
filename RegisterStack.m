@@ -394,6 +394,9 @@ classdef RegisterStack < handle
             X_zstack = [ obj.cp_zstack ones(size(obj.cp_zstack,1),1)];
             X_reference = [ obj.cp_reference ones(size(obj.cp_reference,1),1)];
             % solve for transformation matrix
+            if size(obj.reference, 3) == 1
+                 X_reference = X_reference(:, [1,2,4]);
+            end
             obj.A_for = X_reference \ X_zstack;    % coefs for transforming reference coords into zstack, X_reference * A_for = X_zstack
             obj.A_rev = X_zstack \ X_reference;    % the inverse
             
